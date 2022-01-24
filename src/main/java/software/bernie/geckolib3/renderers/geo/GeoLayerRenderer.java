@@ -10,7 +10,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.model.provider.GeoModelProvider;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.provider.AbstractGeoModel;
 
 public abstract class GeoLayerRenderer<T extends Entity & IAnimatable> {
 	private final IGeoRenderer<T> entityRenderer;
@@ -19,20 +20,20 @@ public abstract class GeoLayerRenderer<T extends Entity & IAnimatable> {
 		this.entityRenderer = entityRendererIn;
 	}
 
-	protected void renderCopyModel(GeoModelProvider<T> modelParentIn, Identifier textureLocationIn,
-			MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, T entityIn, float limbSwing,
-			float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTicks, float red,
-			float green, float blue) {
+	protected void renderCopyModel(AbstractGeoModel<T> modelParentIn, Identifier textureLocationIn,
+                                   MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, T entityIn, float limbSwing,
+                                   float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTicks, float red,
+                                   float green, float blue) {
 		if (!entityIn.isInvisible()) {
 			this.renderModel(modelParentIn, textureLocationIn, matrixStackIn, bufferIn, packedLightIn, entityIn,
 					partialTicks, red, green, blue);
 		}
 	}
 
-	protected void renderModel(GeoModelProvider<T> modelProviderIn, Identifier textureLocationIn,
-			MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, T entityIn,
-			float partialTicks, float red, float green, float blue) {
-		GeoModel model = modelProviderIn.getModel(modelProviderIn.getModelResource(entityIn));
+	protected void renderModel(AbstractGeoModel<T> modelProviderIn, Identifier textureLocationIn,
+                               MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, T entityIn,
+                               float partialTicks, float red, float green, float blue) {
+		GeoModel model = modelProviderIn.getGeoModel(modelProviderIn.getModelResource(entityIn));
 		RenderLayer renderType = getRenderType(textureLocationIn);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(renderType);
 		this.getRenderer().render(model, entityIn, partialTicks, renderType, matrixStackIn, bufferIn, ivertexbuilder,
@@ -44,8 +45,8 @@ public abstract class GeoLayerRenderer<T extends Entity & IAnimatable> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public GeoModelProvider<T> getEntityModel() {
-		return this.entityRenderer.getGeoModelProvider();
+	public AnimatedGeoModel<T> getEntityModel() {
+		return this.entityRenderer.getModel();
 	}
 
 	public IGeoRenderer<T> getRenderer() {

@@ -8,6 +8,7 @@ package software.bernie.geckolib3;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,16 +22,17 @@ import software.bernie.geckolib3.resource.GeckoLibCache;
 
 public class GeckoLib {
 	public static final Logger LOGGER = LogManager.getLogger();
-	public static final String ModID = "geckolib3";
-	public static boolean hasInitialized;
+	public static final String MOD_ID = "geckolib3";
+	@Getter
+	private static boolean initialized;
 
 	public static void initialize() {
-		if (!hasInitialized) {
+		if (!initialized) {
 			ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES)
 					.registerReloadListener(new IdentifiableResourceReloadListener() {
 						@Override
 						public Identifier getFabricId() {
-							return new Identifier(GeckoLib.ModID, "models");
+							return new Identifier(GeckoLib.MOD_ID, "models");
 						}
 
 						@Override
@@ -42,6 +44,6 @@ public class GeckoLib {
 						}
 					});
 		}
-		hasInitialized = true;
+		initialized = true;
 	}
 }

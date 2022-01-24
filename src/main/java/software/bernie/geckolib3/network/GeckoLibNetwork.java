@@ -14,7 +14,7 @@ import software.bernie.geckolib3.GeckoLib;
 
 public class GeckoLibNetwork {
 	private static final Map<String, Supplier<ISyncable>> SYNCABLES = new HashMap<>();
-	public static final Identifier SYNCABLE = new Identifier(GeckoLib.ModID, "syncable");
+	public static final Identifier SYNCABLE = new Identifier(GeckoLib.MOD_ID, "syncable");
 
 	public static void syncAnimation(PlayerEntity target, ISyncable syncable, int id, int state) {
 		if (target.world.isClient) {

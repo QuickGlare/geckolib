@@ -12,14 +12,14 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
 import software.bernie.example.entity.BikeEntity;
-import software.bernie.example.entity.GeoExampleEntity;
+import software.bernie.example.entity.ExampleEntity;
 import software.bernie.example.entity.LEEntity;
 import software.bernie.example.entity.RocketProjectile;
 import software.bernie.geckolib3.GeckoLib;
 
 public class EntityRegistry {
-	public static final EntityType<GeoExampleEntity> GEO_EXAMPLE_ENTITY = buildEntity(GeoExampleEntity::new,
-			GeoExampleEntity.class, .7F, 1.3F, SpawnGroup.CREATURE);
+	public static final EntityType<ExampleEntity> GEO_EXAMPLE_ENTITY = buildEntity(ExampleEntity::new,
+			ExampleEntity.class, .7F, 1.3F, SpawnGroup.CREATURE);
 	public static final EntityType<BikeEntity> BIKE_ENTITY = buildEntity(BikeEntity::new, BikeEntity.class, 0.5f, 0.6F,
 			SpawnGroup.CREATURE);
 	public static final EntityType<LEEntity> GEOLAYERENTITY = buildEntity(LEEntity::new, LEEntity.class, 0.45F, 1.0F,
@@ -31,7 +31,7 @@ public class EntityRegistry {
 			float width, float height, SpawnGroup group) {
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			String name = entityClass.getSimpleName().toLowerCase();
-			return EntityRegistryBuilder.<T>createBuilder(new Identifier(GeckoLib.ModID, name)).entity(entity)
+			return EntityRegistryBuilder.<T>createBuilder(new Identifier(GeckoLib.MOD_ID, name)).entity(entity)
 					.category(group).dimensions(EntityDimensions.changing(width, height)).build();
 		}
 		return null;

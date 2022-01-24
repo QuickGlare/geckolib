@@ -9,13 +9,15 @@ import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vector4f;
+import software.bernie.geckolib3.core.model.IModelProvider;
 import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.*;
-import software.bernie.geckolib3.model.provider.GeoModelProvider;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.provider.AbstractGeoModel;
 import software.bernie.geckolib3.util.RenderUtils;
 
 
-public interface IGeoRenderer<T> {
+public interface IGeoRenderer<T> extends IModelProvider {
 	default void render(GeoModel model, T animatable, float partialTicks, RenderLayer type, MatrixStack matrixStackIn,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			int packedOverlayIn, float red, float green, float blue, float alpha) {
@@ -93,9 +95,6 @@ public interface IGeoRenderer<T> {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	GeoModelProvider getGeoModelProvider();
-
 	Identifier getTextureResource(T instance);
 
 	default void renderEarly(T animatable, MatrixStack stackIn, float ticks, VertexConsumerProvider renderTypeBuffer,
@@ -122,4 +121,7 @@ public interface IGeoRenderer<T> {
 	default Integer getUniqueID(T animatable) {
 		return animatable.hashCode();
 	}
+
+	@Override
+	AnimatedGeoModel getModel();
 }

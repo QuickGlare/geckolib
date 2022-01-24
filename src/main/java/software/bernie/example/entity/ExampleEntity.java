@@ -17,11 +17,11 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class GeoExampleEntity extends PathAwareEntity implements IAnimatable, IAnimationTickable {
+public class ExampleEntity extends PathAwareEntity implements IAnimatable, IAnimationTickable {
 	AnimationFactory factory = new AnimationFactory(this);
 	private boolean isAnimating = false;
 
-	public GeoExampleEntity(EntityType<? extends PathAwareEntity> type, World worldIn) {
+	public ExampleEntity(EntityType<? extends PathAwareEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.ignoreCameraFrustum = true;
 	}
@@ -46,7 +46,7 @@ public class GeoExampleEntity extends PathAwareEntity implements IAnimatable, IA
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<GeoExampleEntity>(this, "controller", 0, this::predicate));
+		data.addAnimationController(new AnimationController<ExampleEntity>(this, "controller", 0, this::predicate));
 	}
 
 	@Override

@@ -9,12 +9,11 @@ import software.bernie.example.client.model.entity.ReplacedCreeperModel;
 import software.bernie.example.entity.ReplacedCreeperEntity;
 import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
 
-public class ReplacedCreeperRenderer extends GeoReplacedEntityRenderer<ReplacedCreeperEntity> {
+public class ReplacedCreeperRenderer extends GeoReplacedEntityRenderer<ReplacedCreeperEntity, CreeperEntity> {
 
 	@SuppressWarnings("unchecked")
 	public ReplacedCreeperRenderer(EntityRendererFactory.Context ctx) {
 		super(ctx, new ReplacedCreeperModel(), new ReplacedCreeperEntity());
-		GeoReplacedEntityRenderer.registerReplacedEntity(ReplacedCreeperEntity.class, this);
 	}
 
 	@Override

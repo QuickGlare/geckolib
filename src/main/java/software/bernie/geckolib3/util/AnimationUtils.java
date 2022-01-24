@@ -9,7 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
-import software.bernie.geckolib3.model.provider.GeoModelProvider;
+import software.bernie.geckolib3.model.provider.AbstractGeoModel;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 public class AnimationUtils {
@@ -31,11 +31,11 @@ public class AnimationUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends Entity> GeoModelProvider getGeoModelForEntity(T entity) {
+	public static <T extends Entity> AbstractGeoModel getGeoModelForEntity(T entity) {
 		EntityRenderer<T> entityRenderer = getRenderer(entity);
 
 		if (entityRenderer instanceof IGeoRenderer) {
-			return ((IGeoRenderer<?>) entityRenderer).getGeoModelProvider();
+			return ((IGeoRenderer<?>) entityRenderer).getModel();
 		}
 		return null;
 	}

@@ -9,17 +9,17 @@ public class LEModel extends AnimatedTickingGeoModel<LEEntity> {
 
 	@Override
 	public Identifier getModelResource(LEEntity object) {
-		return new Identifier(GeckoLib.ModID, "geo/le.geo.json");
+		return new Identifier(GeckoLib.MOD_ID, "geo/le.geo.json");
 	}
 
 	@Override
 	public Identifier getTextureResource(LEEntity object) {
-		return new Identifier(GeckoLib.ModID, "textures/entity/le.png");
+		return new Identifier(GeckoLib.MOD_ID, "textures/entity/le.png");
 	}
 
 	@Override
 	public Identifier getAnimationResource(LEEntity animatable) {
-		return new Identifier(GeckoLib.ModID, "animations/le.animations.json");
+		return new Identifier(GeckoLib.MOD_ID, "animations/le.animations.json");
 	}
 
 }

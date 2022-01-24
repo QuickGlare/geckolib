@@ -16,7 +16,7 @@ import software.bernie.geckolib3.GeckoLib;
 public class ItemRegistry {
 
 	public static ItemGroup geckolibItemGroup = FabricItemGroupBuilder
-			.create(new Identifier(GeckoLib.ModID, "geckolib_examples"))
+			.create(new Identifier(GeckoLib.MOD_ID, "geckolib_examples"))
 			.icon(() -> new ItemStack(ItemRegistry.JACK_IN_THE_BOX)).build();
 
 	public static final JackInTheBoxItem JACK_IN_THE_BOX = RegistryUtils.registerItem("jackintheboxitem",

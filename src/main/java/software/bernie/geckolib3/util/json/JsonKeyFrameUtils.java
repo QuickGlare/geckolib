@@ -5,6 +5,7 @@
 
 package software.bernie.geckolib3.util.json;
 
+import com.eliotlash.mclib.math.Constant;
 import com.eliotlash.mclib.math.IValue;
 import com.eliotlash.molang.MolangException;
 import com.eliotlash.molang.MolangParser;
@@ -13,7 +14,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.math.NumberUtils;
 import software.bernie.geckolib3.GeckoLib;
-import software.bernie.geckolib3.core.ConstantValue;
 import software.bernie.geckolib3.core.easing.EasingType;
 import software.bernie.geckolib3.core.keyframe.KeyFrame;
 import software.bernie.geckolib3.core.keyframe.VectorKeyFrameList;
@@ -55,14 +55,14 @@ public class JsonKeyFrameUtils {
 			IValue yValue = parseExpression(parser, vectorJsonArray.get(1));
 			IValue zValue = parseExpression(parser, vectorJsonArray.get(2));
 
-			IValue currentXValue = isRotation && xValue instanceof ConstantValue
-					? ConstantValue.fromDouble(Math.toRadians(-xValue.get()))
+			IValue currentXValue = isRotation && xValue instanceof Constant
+					? new Constant(Math.toRadians(-xValue.get()))
 					: xValue;
-			IValue currentYValue = isRotation && yValue instanceof ConstantValue
-					? ConstantValue.fromDouble(Math.toRadians(-yValue.get()))
+			IValue currentYValue = isRotation && yValue instanceof Constant
+					? new Constant(Math.toRadians(-yValue.get()))
 					: yValue;
-			IValue currentZValue = isRotation && zValue instanceof ConstantValue
-					? ConstantValue.fromDouble(Math.toRadians(zValue.get()))
+			IValue currentZValue = isRotation && zValue instanceof Constant
+					? new Constant(Math.toRadians(zValue.get()))
 					: zValue;
 			KeyFrame<IValue> xKeyFrame;
 			KeyFrame<IValue> yKeyFrame;
@@ -179,7 +179,7 @@ public class JsonKeyFrameUtils {
 		if (element.getAsJsonPrimitive().isString()) {
 			return parser.parseJson(element);
 		} else {
-			return ConstantValue.fromDouble(element.getAsDouble());
+			return new Constant(element.getAsDouble());
 		}
 	}
 

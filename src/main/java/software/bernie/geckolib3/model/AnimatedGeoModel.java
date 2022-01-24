@@ -1,6 +1,7 @@
 package software.bernie.geckolib3.model;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import com.eliotlash.molang.MolangParser;
 
@@ -12,7 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimatableModel;
+import software.bernie.geckolib3.core.model.IAnimatableModel;
 import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -22,13 +23,13 @@ import software.bernie.geckolib3.file.AnimationFile;
 import software.bernie.geckolib3.geo.exception.GeckoLibException;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.model.provider.GeoModelProvider;
-import software.bernie.geckolib3.model.provider.IAnimatableModelProvider;
+import software.bernie.geckolib3.model.provider.AbstractGeoModel;
+import software.bernie.geckolib3.model.provider.IAnimationProvider;
 import software.bernie.geckolib3.resource.GeckoLibCache;
 import software.bernie.geckolib3.util.MolangUtils;
 
-public abstract class AnimatedGeoModel<T extends IAnimatable> extends GeoModelProvider<T>
-		implements IAnimatableModel<T>, IAnimatableModelProvider<T> {
+public abstract class AnimatedGeoModel<T extends IAnimatable> extends AbstractGeoModel<T>
+		implements IAnimatableModel<T>, IAnimationProvider<T> {
 	@SuppressWarnings("rawtypes")
 	private final AnimationProcessor animationProcessor;
 	private GeoModel currentModel;
@@ -92,7 +93,7 @@ public abstract class AnimatedGeoModel<T extends IAnimatable> extends GeoModelPr
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Animation getAnimation(String name, IAnimatable animatable) {
+	public Optional<Animation> getAnimation(String name, IAnimatable animatable) {
 		AnimationFile animation = GeckoLibCache.getInstance().getAnimations()
 				.get(this.getAnimationResource((T) animatable));
 		if (animation == null) {
@@ -103,8 +104,8 @@ public abstract class AnimatedGeoModel<T extends IAnimatable> extends GeoModelPr
 	}
 
 	@Override
-	public GeoModel getModel(Identifier location) {
-		GeoModel model = super.getModel(location);
+	public GeoModel getGeoModel(Identifier location) {
+		GeoModel model = super.getGeoModel(location);
 		if (model == null) {
 			throw new GeckoLibException(location,
 					"Could not find model. If you are getting this with a built mod, please just restart your game.");

@@ -7,5 +7,5 @@ import software.bernie.geckolib3.GeckoLib;
 
 public class SoundRegistry {
 	public static SoundEvent JACK_MUSIC = Registry.register(Registry.SOUND_EVENT, "jack_music",
-			new SoundEvent(new Identifier(GeckoLib.ModID, "jack_music")));
+			new SoundEvent(new Identifier(GeckoLib.MOD_ID, "jack_music")));
 }

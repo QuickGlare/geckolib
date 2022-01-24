@@ -31,14 +31,14 @@ public class GeckoLibCache {
 	private final GeoModelLoader modelLoader;
 
 	public Map<Identifier, AnimationFile> getAnimations() {
-		if (!GeckoLib.hasInitialized) {
+		if (!GeckoLib.isInitialized()) {
 			throw new RuntimeException("GeckoLib was never initialized! Please read the documentation!");
 		}
 		return animations;
 	}
 
 	public Map<Identifier, GeoModel> getGeoModels() {
-		if (!GeckoLib.hasInitialized) {
+		if (!GeckoLib.isInitialized()) {
 			throw new RuntimeException("GeckoLib was never initialized! Please read the documentation!");
 		}
 		return geoModels;

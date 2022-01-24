@@ -12,6 +12,7 @@ plugins {
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'io.freefair.lombok' version '6.3.0'
 }
 
 import groovy.json.JsonSlurper

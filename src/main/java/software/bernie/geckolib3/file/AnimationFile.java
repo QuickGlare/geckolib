@@ -4,12 +4,13 @@ import software.bernie.geckolib3.core.builder.Animation;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class AnimationFile {
 	private final HashMap<String, Animation> animations = new HashMap<>();
 
-	public Animation getAnimation(String name) {
-		return animations.get(name);
+	public Optional<Animation> getAnimation(String name) {
+		return Optional.ofNullable(animations.get(name));
 	}
 
 	public Collection<Animation> getAllAnimations() {

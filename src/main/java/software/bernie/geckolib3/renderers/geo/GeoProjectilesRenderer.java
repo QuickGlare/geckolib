@@ -14,40 +14,29 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimatableModel;
-import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.model.IAnimatableModel;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.model.IModel;
 import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
-import software.bernie.geckolib3.util.AnimationUtils;
 
 @SuppressWarnings("unchecked")
 public class GeoProjectilesRenderer<T extends Entity & IAnimatable> extends EntityRenderer<T>
 		implements IGeoRenderer<T> {
 
-	static {
-		AnimationController.addModelFetcher((IAnimatable object) -> {
-			if (object instanceof Entity) {
-				return (IAnimatableModel<Object>) AnimationUtils.getGeoModelForEntity((Entity) object);
-			}
-			return null;
-		});
-	}
+	private final AnimatedGeoModel<T> model;
 
-	private final AnimatedGeoModel<T> modelProvider;
-
-	public GeoProjectilesRenderer(EntityRendererFactory.Context ctx, AnimatedGeoModel<T> modelProvider) {
+	public GeoProjectilesRenderer(EntityRendererFactory.Context ctx, AnimatedGeoModel<T> model) {
 		super(ctx);
-		this.modelProvider = modelProvider;
+		this.model = model;
 	}
 
 	@Override
 	public void render(T entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn,
 			VertexConsumerProvider bufferIn, int packedLightIn) {
-		GeoModel model = modelProvider.getModel(modelProvider.getModelResource(entityIn));
+		GeoModel model = this.model.getGeoModel(this.model.getModelResource(entityIn));
 		matrixStackIn.push();
 		matrixStackIn.multiply(Vec3f.POSITIVE_Y
 				.getDegreesQuaternion(MathHelper.lerp(partialTicks, entityIn.prevYaw, entityIn.getYaw()) - 90.0F));
@@ -63,14 +52,10 @@ public class GeoProjectilesRenderer<T extends Entity & IAnimatable> extends Enti
 				(float) renderColor.getGreen() / 255f, (float) renderColor.getBlue() / 255f,
 				(float) renderColor.getAlpha() / 255);
 
-		float lastLimbDistance = 0.0F;
-		float limbSwing = 0.0F;
 		EntityModelData entityModelData = new EntityModelData();
-		AnimationEvent<T> predicate = new AnimationEvent<T>(entityIn, limbSwing, lastLimbDistance, partialTicks,
-				!(lastLimbDistance > -0.15F && lastLimbDistance < 0.15F), Collections.singletonList(entityModelData));
-		if (modelProvider instanceof IAnimatableModel) {
-			((IAnimatableModel<T>) modelProvider).setLivingAnimations(entityIn, this.getUniqueID(entityIn), predicate);
-		}
+		AnimationEvent<T> predicate = new AnimationEvent<T>(entityIn, 0.0F, 0.0F, partialTicks,
+				false, Collections.singletonList(entityModelData));
+		this.model.setLivingAnimations(entityIn, this.getUniqueID(entityIn), predicate);
 		matrixStackIn.pop();
 		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
@@ -80,13 +65,13 @@ public class GeoProjectilesRenderer<T extends Entity & IAnimatable> extends Enti
 	}
 
 	@Override
-	public GeoModelProvider<T> getGeoModelProvider() {
-		return this.modelProvider;
+	public AnimatedGeoModel<T> getModel() {
+		return this.model;
 	}
 
 	@Override
 	public Identifier getTextureResource(T instance) {
-		return this.modelProvider.getTextureResource(instance);
+		return this.model.getTextureResource(instance);
 	}
 
 	@Override

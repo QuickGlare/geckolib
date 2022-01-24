@@ -1,9 +1,7 @@
 package software.bernie.geckolib3.renderers.geo;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -14,18 +12,16 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.compat.PatchouliCompat;
 import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.model.IModel;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
@@ -34,19 +30,7 @@ import software.bernie.geckolib3.util.GeoUtils;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeoRenderer<T>, ArmorRenderer {
-	public static final Map<Class<? extends ArmorItem>, GeoArmorRenderer> renderers = new ConcurrentHashMap<>();
-
-	static {
-		AnimationController.addModelFetcher((IAnimatable object) -> {
-			if (object instanceof ArmorItem) {
-				GeoArmorRenderer renderer = renderers.get(object.getClass());
-				return renderer == null ? null : renderer.getGeoModelProvider();
-			}
-			return null;
-		});
-	}
-
-	protected AnimatedGeoModel<T> modelProvider;
+	protected AnimatedGeoModel<T> model;
 	protected ItemStack currentItemStack;
 
 	// Set these to the names of your armor's bones, or null if you aren't using
@@ -66,33 +50,12 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 	private EquipmentSlot armorSlot;
 	private BipedEntityModel baseModel;
 
-	public GeoArmorRenderer(AnimatedGeoModel<T> modelProvider) {
-		this.modelProvider = modelProvider;
+	public GeoArmorRenderer(AnimatedGeoModel<T> model) {
+		this.model = model;
 	}
 
 	public void setModel(AnimatedGeoModel<T> model) {
-		this.modelProvider = model;
-	}
-
-	public static <E extends Entity> void registerArmorRenderer(GeoArmorRenderer renderer, Item... items) {
-		for (Item item : items) {
-			registerArmorRenderer(renderer, item);
-		}
-	}
-
-	public static <E extends Entity> void registerArmorRenderer(GeoArmorRenderer renderer, Item item) {
-		if (item instanceof ArmorItem) {
-			renderers.put((Class<? extends ArmorItem>) item.getClass(), renderer);
-			ArmorRenderer.register(renderer, item);
-		}
-	}
-
-	public static GeoArmorRenderer getRenderer(Class<? extends ArmorItem> item) {
-		final GeoArmorRenderer renderer = renderers.get(item);
-		if (renderer == null) {
-			throw new IllegalArgumentException("Renderer not registered for item " + item);
-		}
-		return renderer;
+		this.model = model;
 	}
 
 	@Override
@@ -112,12 +75,12 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 	public void render(MatrixStack stack, VertexConsumerProvider bufferIn, int packedLightIn) {
 		stack.translate(0.0D, 24 / 16F, 0.0D);
 		stack.scale(-1.0F, -1.0F, 1.0F);
-		GeoModel model = modelProvider.getModel(modelProvider.getModelResource(currentArmorItem));
+		GeoModel model = this.model.getGeoModel(this.model.getModelResource(currentArmorItem));
 
 		AnimationEvent<T> itemEvent = new AnimationEvent<T>(this.currentArmorItem, 0, 0,
 				MinecraftClient.getInstance().getTickDelta(), false,
 				Arrays.asList(this.itemStack, this.entityLiving, this.armorSlot));
-		modelProvider.setLivingAnimations(currentArmorItem, this.getUniqueID(this.currentArmorItem), itemEvent);
+		this.model.setLivingAnimations(currentArmorItem, this.getUniqueID(this.currentArmorItem), itemEvent);
 
 		this.fitToBiped();
 		this.applySlot();
@@ -141,7 +104,7 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 	private void fitToBiped() {
 		if (!(this.entityLiving instanceof ArmorStandEntity)) {
 			if (this.headBone != null) {
-				IBone headBone = this.modelProvider.getBone(this.headBone);
+				IBone headBone = this.model.getBone(this.headBone);
 				GeoUtils.copyRotations(baseModel.head, headBone);
 				headBone.setPositionX(baseModel.head.pivotX);
 				headBone.setPositionY(-baseModel.head.pivotY);
@@ -149,14 +112,14 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 			}
 
 			if (this.bodyBone != null) {
-				IBone bodyBone = this.modelProvider.getBone(this.bodyBone);
+				IBone bodyBone = this.model.getBone(this.bodyBone);
 				GeoUtils.copyRotations(baseModel.body, bodyBone);
 				bodyBone.setPositionX(baseModel.body.pivotX);
 				bodyBone.setPositionY(-baseModel.body.pivotY);
 				bodyBone.setPositionZ(baseModel.body.pivotZ);
 			}
 			if (this.rightArmBone != null) {
-				IBone rightArmBone = this.modelProvider.getBone(this.rightArmBone);
+				IBone rightArmBone = this.model.getBone(this.rightArmBone);
 				GeoUtils.copyRotations(baseModel.rightArm, rightArmBone);
 				rightArmBone.setPositionX(baseModel.rightArm.pivotX + 5);
 				rightArmBone.setPositionY(2 - baseModel.rightArm.pivotY);
@@ -164,20 +127,20 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 			}
 
 			if (this.leftArmBone != null) {
-				IBone leftArmBone = this.modelProvider.getBone(this.leftArmBone);
+				IBone leftArmBone = this.model.getBone(this.leftArmBone);
 				GeoUtils.copyRotations(baseModel.leftArm, leftArmBone);
 				leftArmBone.setPositionX(baseModel.leftArm.pivotX - 5);
 				leftArmBone.setPositionY(2 - baseModel.leftArm.pivotY);
 				leftArmBone.setPositionZ(baseModel.leftArm.pivotZ);
 			}
 			if (this.rightLegBone != null) {
-				IBone rightLegBone = this.modelProvider.getBone(this.rightLegBone);
+				IBone rightLegBone = this.model.getBone(this.rightLegBone);
 				GeoUtils.copyRotations(baseModel.rightLeg, rightLegBone);
 				rightLegBone.setPositionX(baseModel.rightLeg.pivotX + 2);
 				rightLegBone.setPositionY(12 - baseModel.rightLeg.pivotY);
 				rightLegBone.setPositionZ(baseModel.rightLeg.pivotZ);
 				if (this.rightBootBone != null) {
-					IBone rightBootBone = this.modelProvider.getBone(this.rightBootBone);
+					IBone rightBootBone = this.model.getBone(this.rightBootBone);
 					GeoUtils.copyRotations(baseModel.rightLeg, rightBootBone);
 					rightBootBone.setPositionX(baseModel.rightLeg.pivotX + 2);
 					rightBootBone.setPositionY(12 - baseModel.rightLeg.pivotY);
@@ -185,13 +148,13 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 				}
 			}
 			if (this.leftLegBone != null) {
-				IBone leftLegBone = this.modelProvider.getBone(this.leftLegBone);
+				IBone leftLegBone = this.model.getBone(this.leftLegBone);
 				GeoUtils.copyRotations(baseModel.leftLeg, leftLegBone);
 				leftLegBone.setPositionX(baseModel.leftLeg.pivotX - 2);
 				leftLegBone.setPositionY(12 - baseModel.leftLeg.pivotY);
 				leftLegBone.setPositionZ(baseModel.leftLeg.pivotZ);
 				if (this.leftBootBone != null) {
-					IBone leftBootBone = this.modelProvider.getBone(this.leftBootBone);
+					IBone leftBootBone = this.model.getBone(this.leftBootBone);
 					GeoUtils.copyRotations(baseModel.leftLeg, leftBootBone);
 					leftBootBone.setPositionX(baseModel.leftLeg.pivotX - 2);
 					leftBootBone.setPositionY(12 - baseModel.leftLeg.pivotY);
@@ -201,14 +164,15 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 		}
 	}
 
+
 	@Override
-	public AnimatedGeoModel<T> getGeoModelProvider() {
-		return this.modelProvider;
+	public AnimatedGeoModel<T> getModel() {
+		return this.model;
 	}
 
 	@Override
 	public Identifier getTextureResource(T instance) {
-		return this.modelProvider.getTextureResource(instance);
+		return this.model.getTextureResource(instance);
 	}
 
 	/**
@@ -227,7 +191,7 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 
 	@SuppressWarnings("incomplete-switch")
 	public GeoArmorRenderer<T> applySlot() {
-		modelProvider.getModel(modelProvider.getModelResource(currentArmorItem));
+		model.getGeoModel(model.getModelResource(currentArmorItem));
 
 		IBone headBone = this.getAndHideBone(this.headBone);
 		IBone bodyBone = this.getAndHideBone(this.bodyBone);
@@ -269,7 +233,7 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 
 	protected IBone getAndHideBone(String boneName) {
 		if (boneName != null) {
-			final IBone bone = this.modelProvider.getBone(boneName);
+			final IBone bone = this.model.getBone(boneName);
 			bone.setHidden(true);
 			return bone;
 		}
