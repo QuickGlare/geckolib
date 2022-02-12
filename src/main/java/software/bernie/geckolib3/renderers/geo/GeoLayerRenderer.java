@@ -53,7 +53,7 @@ public abstract class GeoLayerRenderer<T extends Entity & IAnimatable> {
 	}
 
 	protected Identifier getEntityTexture(T entityIn) {
-		return this.entityRenderer.getTextureLocation(entityIn);
+		return this.entityRenderer.getTexture(entityIn);
 	}
 
 	public abstract void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn,

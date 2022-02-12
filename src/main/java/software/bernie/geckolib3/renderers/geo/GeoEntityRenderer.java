@@ -193,14 +193,9 @@ public abstract class GeoEntityRenderer<T extends LivingEntity & IAnimatable> ex
 		this.leggings = animatable.getEquippedStack(EquipmentSlot.LEGS);
 		this.boots = animatable.getEquippedStack(EquipmentSlot.FEET);
 		this.rtb = renderTypeBuffer;
-		this.whTexture = this.getTextureLocation(animatable);
+		this.whTexture = this.getTexture(animatable);
 		IGeoRenderer.super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn,
 				packedOverlayIn, red, green, blue, partialTicks);
-	}
-
-	@Override
-	public Identifier getTexture(T entity) {
-		return getTextureLocation(entity);
 	}
 
 	@Override
@@ -279,7 +274,7 @@ public abstract class GeoEntityRenderer<T extends LivingEntity & IAnimatable> ex
 	}
 
 	@Override
-	public Identifier getTextureLocation(T instance) {
+	public Identifier getTexture(T instance) {
 		return this.modelProvider.getTextureLocation(instance);
 	}
 

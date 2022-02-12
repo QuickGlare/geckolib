@@ -85,13 +85,8 @@ public class GeoProjectilesRenderer<T extends Entity & IAnimatable> extends Enti
 	}
 
 	@Override
-	public Identifier getTextureLocation(T instance) {
+	public Identifier getTexture(T instance) {
 		return this.modelProvider.getTextureLocation(instance);
-	}
-
-	@Override
-	public Identifier getTexture(T entity) {
-		return getTextureLocation(entity);
 	}
 
 }

@@ -122,10 +122,10 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 		this.fitToBiped();
 		this.applySlot();
 		stack.push();
-		MinecraftClient.getInstance().getTextureManager().bindTexture(getTextureLocation(currentArmorItem));
+		MinecraftClient.getInstance().getTextureManager().bindTexture(getTexture(currentArmorItem));
 		Color renderColor = getRenderColor(currentArmorItem, 0, stack, bufferIn, null, packedLightIn);
 		RenderLayer renderType = getRenderType(currentArmorItem, 0, stack, bufferIn, null, packedLightIn,
-				getTextureLocation(currentArmorItem));
+				getTexture(currentArmorItem));
 		render(model, currentArmorItem, 0, renderType, stack, bufferIn, null, packedLightIn, OverlayTexture.DEFAULT_UV,
 				(float) renderColor.getRed() / 255f, (float) renderColor.getGreen() / 255f,
 				(float) renderColor.getBlue() / 255f, (float) renderColor.getAlpha() / 255);
@@ -207,7 +207,7 @@ public class GeoArmorRenderer<T extends ArmorItem & IAnimatable> implements IGeo
 	}
 
 	@Override
-	public Identifier getTextureLocation(T instance) {
+	public Identifier getTexture(T instance) {
 		return this.modelProvider.getTextureLocation(instance);
 	}
 
